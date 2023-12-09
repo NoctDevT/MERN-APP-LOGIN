@@ -5,6 +5,8 @@ Application has the ability to send password recovery to users and uses validati
 
 Built using Tailwind, MaterialUI, React, MongoDB Express
 
+Todo: Finish implementing messaging dashboard to the frontend view.
+
 # Step 1
 
 To setup project create .env file in serverjs with following details
