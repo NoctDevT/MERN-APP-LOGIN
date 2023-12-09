@@ -1,0 +1,4 @@
+node_modules
+/serverjs/.env
+/serverjs/node_modules
+/frontend/node_modules
