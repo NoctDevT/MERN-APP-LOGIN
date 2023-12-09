@@ -1,7 +1,5 @@
 const mongoose = require('mongoose')
 
-
-
 const userSchema = mongoose.Schema({
     username: {
         type: String,
@@ -26,14 +24,9 @@ const userSchema = mongoose.Schema({
         type: Date,
         default: Date.now
     }
-
-
 });
 
-
 const UserSchema = mongoose.model('users', userSchema);
-
-
 module.exports = UserSchema;
 
 

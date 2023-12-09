@@ -17,6 +17,7 @@ app.use(express.json())
 app.use(cookieParser());
 
 // db connection
+
 mongoose.connect(process.env.MONGO_LOGIN_STRING)
   .then(() => console.log('Connected successfully to MongoDB')).catch(err => {throw err;});
 

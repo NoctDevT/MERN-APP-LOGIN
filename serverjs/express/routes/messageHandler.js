@@ -2,9 +2,7 @@ const mongoData = require('../../mongoDB/messageSchema');
 const express = require('express')
 const userSchema = require('../../mongoDB/userSchema')
 const app = express();
-
 const verify = require('./verifyToken')
-
 
 app.post('/new/user', (req, res) => {
     const dbData = req.body;
@@ -18,11 +16,7 @@ app.post('/new/user', (req, res) => {
     })
 })
 
-// Private route which you cannot access without auth token 
-
 app.get('/check', verify, (req, res) => {
-
-
     res.json({
         posts: {
             title: "User Data",
@@ -32,31 +26,44 @@ app.get('/check', verify, (req, res) => {
     });
 });
 
+app.post("/new/message", (req, res) => {
+  const newMessage = req.body;
 
-app.post('/new/message', (req, res) => {
-    const newMessage = req.body;
-
-    if (!req.query.id) return res.status(500).send("No ID specified in Param field")
-
-    mongoData.findOneAndUpdate(
-        { _id: req.query.id },
-        { $push: { messageDetails: req.body, timestamp: new Date().toISOString() } },
-        (err, data) => {
-            console.log(req.body)
-            if (err) {
-                console.log('Error saving message...' + '\n', + err)
-                res.status(500).send(err)
-            } else {
-                res.status(201).send(data)
-            }
-        })
+  mongoData.findOneAndDelete({ userName: req.query.username }, (err, data) => {
+    if (err) {
+      console.log("Error finding/deleting message..." + "\n", err);
+      res.status(500).send(err);
+    } else {
+      const messageToInsert = {
+        ...newMessage,
+      };
+      mongoData.create(
+        { userName: req.query.username, messageDetails: messageToInsert },
+        (err, newData) => {
+          if (err) {
+            console.log("Error saving new message..." + "\n", err);
+            res.status(500).send(err);
+          } else {
+            res.status(201).send(newData);
+          }
+        }
+      );
+    }
+  });
 });
 
 
-app.post('/get/messages', (req, res) => {
-    const id = req.query.id
+app.get('/delete/message', (req, res) => {
+    const username = req.query.username;
+    mongoData.findOneAndDelete({ userName: req.query.username }, (err, data) => {
+        if(err) res.status(500).send(err)
+        res.status(200).send({message: `Successfully deleted message from ${username}`})
+    })
+})
 
-    mongoData.find({ _id: id }, (err, data) => {
+app.get('/get/messages',  verify, (req, res) => {
+    const username = req.query.username
+    mongoData.find({ userID: username }, (err, data) => {
         if (err) {
             res.status(500).send(err)
         } else {
@@ -65,17 +72,12 @@ app.post('/get/messages', (req, res) => {
     });
 })
 
-
-
-
-//get point
-app.get('/get/userList', (req, res) => {
+app.get('/get/userList', verify, (req, res) => {
     mongoData.find((err, data) => {
         if (err) {
             res.status(500).send(err)
         } else {
             let users = [];
-
             data.map((userData) => {
                 console.log(userData)
                 const userInfo = {
@@ -84,17 +86,12 @@ app.get('/get/userList', (req, res) => {
                 }
                 users.push(userInfo)
             })
-
             res.status(200).send(users)
         }
-
     })
 })
 
-
-
 app.get('/get/test', (req, res) => {
-
     mongoData.findOne({})
         .sort({ 'messageDetails._id': -1 })
         .unwind({})
@@ -102,11 +99,9 @@ app.get('/get/test', (req, res) => {
             console.log('hello world ')
             res.json(data)
         })
-
 })
 
 app.get('/get/test2', (req, res) => {
-
     mongoData.findOne({})
         .sort({ 'messageDetails._id': -1 })
         .unwind({})
@@ -114,8 +109,6 @@ app.get('/get/test2', (req, res) => {
             console.log('hello world ')
             res.json(data)
         })
-
 })
-
 
 module.exports = app

@@ -1,10 +1,7 @@
 const mongoose = require('mongoose')
 
-
 const messageSchema = mongoose.Schema({
-    _id: String,
     userName: String,
-    testField: String,
     messageDetails: [
         {
             message: String,
@@ -13,10 +10,7 @@ const messageSchema = mongoose.Schema({
     ]
 });
 
-
-const saveMessage = mongoose.model('messages', messageSchema);
-
-
+const saveMessage = mongoose.model('user_messages', messageSchema);
 module.exports = saveMessage;
 
 

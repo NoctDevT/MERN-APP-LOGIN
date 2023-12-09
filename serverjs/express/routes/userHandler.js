@@ -23,11 +23,12 @@ app.post('/register', async (req, res) => {
     if (error === true) return res.status(400).json(submitStatus);
 
 
-    // Do a check to see if the email is being used 
+    // Do a check to see if the email or email is being used 
     const emailExist = await userSchema.findOne({ email: req.body.email })
     if (emailExist) return res.status(400).json({ message: 'Email already exists' })
 
-
+    const usernameExists = await userSchema.findOne({ userName: req.body.username })
+    if (usernameExists) return res.status(400).json({ message: 'Username already exists' })
 
     //hash passwords -- research better encryption hashes 
     const salt = await bcrypt.genSalt(10)
@@ -42,10 +43,8 @@ app.post('/register', async (req, res) => {
     try {
         const savedUser = await user.save();
         res.status(200).json({ message: 'Successfully registered', user: user._id, redirectUrl: '/Login', success: true });
-
     } catch (err) {
         res.status(400).json({ message: err });
-
     }
 })
 
@@ -75,9 +74,7 @@ app.post('/login', async (req, res) => {
 
     });
 
-
     res.status(200).json({ message: 'Logged in', success: true, redirectUrl: '/Home' })
-
     // res.header('auth-token', token).send(token);
     // res.send('logged in');
 })
