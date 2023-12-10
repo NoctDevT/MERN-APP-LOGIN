@@ -3,6 +3,9 @@ An unfinished application which uses a MERN stack to login made in 2021
 Application uses JWT authentication with salt to securely store password within database.
 Application has the ability to send password recovery to users and uses validation forms to protect against injection attacks.
 
+Built using Tailwind, MaterialUI, React, MongoDB Express
+
+Todo: Finish implementing messaging dashboard to the frontend view.
 
 # Step 1
 
