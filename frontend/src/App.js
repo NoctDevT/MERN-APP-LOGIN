@@ -11,6 +11,7 @@ import Register from './pages/Register'
 import ResetPassword from './pages/ResetPassword'
 import UserPage from './pages/UserPage'
 import Sidebar from './hooks/Sidebar'
+import Messages from './pages/Messages'
 
 function App() {
 
@@ -19,8 +20,9 @@ function App() {
   return (
     <>
       <Router>
+        <div className="flex">
         <Sidebar />
-
+        <div className="flex-1">
         <Routes>
           <Route exact path="/" element={<Home />} />
           <Route path="/Users" element={<UserPage />} />
@@ -28,13 +30,14 @@ function App() {
           <Route path="/Register" element={<Register />} />
           <Route path="/resetPassword" element={<ResetPassword />} />
           <Route path="/forgotPassword" element={<ForgotPassword />} />
+          <Route path="/Messages" element={<Messages />} />
+
         </Routes>
+        </div>
+        </div>
+
       </Router>
     </>
   );
 }
-
-
-
-
 export default App;

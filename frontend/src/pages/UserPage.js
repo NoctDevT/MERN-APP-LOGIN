@@ -61,7 +61,6 @@ export default function UserPage() {
           })}
         </ul >
   
-        <Sidebar />
   
         {/* </div> */}
       </div >
