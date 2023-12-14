@@ -3,6 +3,8 @@ const express = require('express')
 const userSchema = require('../../mongoDB/userSchema')
 const app = express();
 const verify = require('./verifyToken')
+const jwt = require('jsonwebtoken');
+
 
 app.post('/new/user', (req, res) => {
     const dbData = req.body;
@@ -29,16 +31,29 @@ app.get('/check', verify, (req, res) => {
 app.post("/new/message", (req, res) => {
   const newMessage = req.body;
 
-  mongoData.findOneAndDelete({ userName: req.query.username }, (err, data) => {
+
+
+
+  if (!newMessage) return res.status(400);
+  const jwt_token = req.cookies["token"];
+
+  if (!jwt_token) return res.status(401);
+
+
+  var decoded_token = jwt.decode(jwt_token);
+
+
+  mongoData.findOneAndDelete({ userName: decoded_token._id }, (err, data) => {
     if (err) {
       console.log("Error finding/deleting message..." + "\n", err);
       res.status(500).send(err);
     } else {
       const messageToInsert = {
-        ...newMessage,
+        message: newMessage.message,
+        timestamp: new Date().toLocaleString(),
       };
       mongoData.create(
-        { userName: req.query.username, messageDetails: messageToInsert },
+        { userName: decoded_token.username, messageDetails: messageToInsert },
         (err, newData) => {
           if (err) {
             console.log("Error saving new message..." + "\n", err);
@@ -61,7 +76,19 @@ app.get('/delete/message', (req, res) => {
     })
 })
 
-app.get('/get/messages',  verify, (req, res) => {
+
+app.get('/get/messages', (req, res) => {
+    mongoData.find({}, (err, data) => {
+        if (err) {
+            res.status(500).send(err)
+        } else {
+            res.status(200).send(data)
+        }
+    });
+})
+
+
+app.get('/get/user/messages',  verify, (req, res) => {
     const username = req.query.username
     mongoData.find({ userID: username }, (err, data) => {
         if (err) {

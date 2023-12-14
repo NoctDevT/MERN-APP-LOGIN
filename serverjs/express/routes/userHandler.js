@@ -27,7 +27,7 @@ app.post('/register', async (req, res) => {
     const emailExist = await userSchema.findOne({ email: req.body.email })
     if (emailExist) return res.status(400).json({ message: 'Email already exists' })
 
-    const usernameExists = await userSchema.findOne({ userName: req.body.username })
+    const usernameExists = await userSchema.findOne({ username: req.body.username })
     if (usernameExists) return res.status(400).json({ message: 'Username already exists' })
 
     //hash passwords -- research better encryption hashes 
@@ -66,7 +66,7 @@ app.post('/login', async (req, res) => {
 
 
     //JWT token has been assigned 
-    const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET, { expiresIn: "2h" })
+    const token = jwt.sign({ _id: user._id, username: user.username }, process.env.TOKEN_SECRET, { expiresIn: "2h" })
 
 
     res.cookie("token", token, {

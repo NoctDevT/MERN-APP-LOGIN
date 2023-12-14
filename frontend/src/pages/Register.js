@@ -1,7 +1,7 @@
 import react, { useState, useRef, useEffect, useLayoutEffect } from "react";
 
 import "../App.css";
-import axios from "axios";
+import axios from "../axios";
 
 import {
   BrowserRouter as Router,

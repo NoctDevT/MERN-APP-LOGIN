@@ -1,7 +1,7 @@
 import  { useState } from 'react'
 
 import '../App.css';
-import axios from 'axios';
+import axios from '../axios.js';
 
 import { BrowserRouter as Router, Route, Routes, Link, useNavigate } from 'react-router-dom'
 
@@ -45,7 +45,7 @@ export default function Login() {
     axios
       .post(
         "/user/login",
-        { email: formData.email, password: formData.password },
+        { "email": formData.email, "password": formData.password },
         { withCredentials: true }
       )
       .then((Response) => {
